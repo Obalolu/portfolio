@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:portfolio/utils/app_animations.dart';
 import 'package:portfolio/utils/app_colors.dart';
 import 'package:portfolio/utils/app_spacing.dart';
+import 'package:portfolio/widgets/shared/universal_interactive.dart';
 
 /// Animated card with hover lift effect
 class HoverCard extends StatefulWidget {
@@ -27,35 +28,34 @@ class HoverCard extends StatefulWidget {
 }
 
 class _HoverCardState extends State<HoverCard> {
-  bool _isHovered = false;
-
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: AnimatedContainer(
-        duration: widget.duration,
-        curve: AppAnimations.easeOut,
-        transform: Matrix4.identity()..scaled(_isHovered ? widget.hoverScale : 1.0, 1.0, 1.0),
-        decoration: BoxDecoration(
-          color: _isHovered && widget.hoverColor != null ? widget.hoverColor : null,
-          boxShadow: _isHovered
-              ? [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.2),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                ]
-              : null,
-        ),
-        child: InkWell(
-          onTap: widget.onTap,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+    return UniversalInteractive(
+      onTap: widget.onTap,
+      builder: (context, state) {
+        final isActive = state.isHovered || state.isPressed;
+        return AnimatedContainer(
+          duration: widget.duration,
+          curve: AppAnimations.easeOut,
+          transform: Matrix4.identity()
+            ..scale(isActive ? widget.hoverScale : 1.0),
+          decoration: BoxDecoration(
+            color: isActive && widget.hoverColor != null
+                ? widget.hoverColor
+                : null,
+            boxShadow: isActive
+                ? [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.2),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ]
+                : null,
+          ),
           child: widget.child,
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -99,9 +99,13 @@ class _AnimatedButtonState extends State<AnimatedButton> {
               : null,
           color: widget.primary
               ? (_isHovered ? AppColors.primary : Colors.transparent)
-              : (_isHovered ? AppColors.primary.withValues(alpha: 0.1) : Colors.transparent),
+              : (_isHovered
+                    ? AppColors.primary.withValues(alpha: 0.1)
+                    : Colors.transparent),
           border: Border.all(
-            color: widget.primary ? AppColors.primary : AppColors.primary.withValues(alpha: 0.5),
+            color: widget.primary
+                ? AppColors.primary
+                : AppColors.primary.withValues(alpha: 0.5),
           ),
           borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
         ),
@@ -111,7 +115,9 @@ class _AnimatedButtonState extends State<AnimatedButton> {
             if (widget.icon != null) ...[
               Icon(
                 widget.icon,
-                color: widget.primary ? AppColors.textPrimary : AppColors.primary,
+                color: widget.primary
+                    ? AppColors.textPrimary
+                    : AppColors.primary,
                 size: 16,
               ),
               const SizedBox(width: 8),
@@ -121,7 +127,9 @@ class _AnimatedButtonState extends State<AnimatedButton> {
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: widget.primary ? AppColors.textPrimary : AppColors.primary,
+                color: widget.primary
+                    ? AppColors.textPrimary
+                    : AppColors.primary,
               ),
             ),
           ],
@@ -168,17 +176,12 @@ class _CountUpAnimationState extends State<CountUpAnimation>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: _slowEndCurve,
-      ),
-    );
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: _slowEndCurve));
 
     // Start animation after delay
     Future.delayed(widget.delay, () {
@@ -200,7 +203,9 @@ class _CountUpAnimationState extends State<CountUpAnimation>
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
-        final value = (widget.start + (widget.end - widget.start) * _animation.value).round();
+        final value =
+            (widget.start + (widget.end - widget.start) * _animation.value)
+                .round();
         return Text(
           '${widget.prefix}$value${widget.suffix}',
           style: widget.style,
@@ -225,7 +230,8 @@ class _SlowEndCurve extends Curve {
       // Last 30% of time: crawl the remaining 10%
       final remainingTime = (t - 0.7) / 0.3; // 0 to 1
       // Use easeOutCubic for the final stretch
-      final eased = 1 - (1 - remainingTime) * (1 - remainingTime) * (1 - remainingTime);
+      final eased =
+          1 - (1 - remainingTime) * (1 - remainingTime) * (1 - remainingTime);
       return 0.9 + eased * 0.1;
     }
   }
@@ -260,16 +266,10 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
     _animation = Tween<double>(begin: 0.0, end: widget.progress).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: AppAnimations.easeOutCubic,
-      ),
+      CurvedAnimation(parent: _controller, curve: AppAnimations.easeOutCubic),
     );
 
     Future.delayed(const Duration(milliseconds: 300), () {
@@ -293,7 +293,9 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
           return LinearProgressIndicator(
             value: _animation.value,
             backgroundColor: AppColors.surfaceLight,
-            valueColor: AlwaysStoppedAnimation(widget.color ?? AppColors.primary),
+            valueColor: AlwaysStoppedAnimation(
+              widget.color ?? AppColors.primary,
+            ),
             minHeight: widget.height,
           );
         },
@@ -307,12 +309,14 @@ class AnimatedSocialIcon extends StatefulWidget {
   final IconData icon;
   final VoidCallback? onTap;
   final String tooltip;
+  final String? semanticLabel;
 
   const AnimatedSocialIcon({
     super.key,
     required this.icon,
     this.onTap,
     this.tooltip = '',
+    this.semanticLabel,
   });
 
   @override
@@ -321,7 +325,6 @@ class AnimatedSocialIcon extends StatefulWidget {
 
 class _AnimatedSocialIconState extends State<AnimatedSocialIcon>
     with SingleTickerProviderStateMixin {
-  bool _isHovered = false;
   late AnimationController _controller;
   late Animation<double> _rotationAnimation;
 
@@ -333,10 +336,7 @@ class _AnimatedSocialIconState extends State<AnimatedSocialIcon>
       vsync: this,
     );
     _rotationAnimation = Tween<double>(begin: 0.0, end: 0.15).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: AppAnimations.easeOut,
-      ),
+      CurvedAnimation(parent: _controller, curve: AppAnimations.easeOut),
     );
   }
 
@@ -348,48 +348,56 @@ class _AnimatedSocialIconState extends State<AnimatedSocialIcon>
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) {
-        setState(() => _isHovered = true);
-        _controller.forward();
-      },
-      onExit: (_) {
-        setState(() => _isHovered = false);
-        _controller.reverse();
-      },
-      child: Tooltip(
-        message: widget.tooltip,
-        child: InkWell(
-          onTap: widget.onTap,
-          borderRadius: BorderRadius.circular(24),
-          child: AnimatedContainer(
-            duration: AppAnimations.fast,
-            curve: AppAnimations.easeOut,
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: _isHovered ? AppColors.primary : AppColors.surfaceLight,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(
-                color: AppColors.primary.withValues(alpha: _isHovered ? 1.0 : 0.3),
+    return UniversalInteractive(
+      onTap: widget.onTap,
+      builder: (context, state) {
+        final isActive = state.isHovered || state.isPressed;
+
+        if (isActive && !_controller.isAnimating) {
+          _controller.forward();
+        } else if (!isActive && !_controller.isAnimating) {
+          _controller.reverse();
+        }
+
+        return Semantics(
+          button: true,
+          label: widget.semanticLabel ?? widget.tooltip,
+          child: Tooltip(
+            message: widget.tooltip,
+            child: AnimatedContainer(
+              duration: AppAnimations.fast,
+              curve: AppAnimations.easeOut,
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: isActive ? AppColors.primary : AppColors.surfaceLight,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: AppColors.primary.withValues(
+                    alpha: isActive ? 1.0 : 0.3,
+                  ),
+                ),
+              ),
+              child: AnimatedBuilder(
+                animation: _rotationAnimation,
+                builder: (context, child) {
+                  return Transform.rotate(
+                    angle: isActive ? _rotationAnimation.value * 6.28 : 0,
+                    child: Icon(
+                      widget.icon,
+                      color: isActive
+                          ? AppColors.background
+                          : AppColors.primary,
+                      size: isActive ? 22 : 20,
+                      semanticLabel: widget.semanticLabel,
+                    ),
+                  );
+                },
               ),
             ),
-            child: AnimatedBuilder(
-              animation: _rotationAnimation,
-              builder: (context, child) {
-                return Transform.rotate(
-                  angle: _isHovered ? _rotationAnimation.value * 6.28 : 0,
-                  child: Icon(
-                    widget.icon,
-                    color: _isHovered ? AppColors.background : AppColors.primary,
-                    size: _isHovered ? 22 : 20,
-                  ),
-                );
-              },
-            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

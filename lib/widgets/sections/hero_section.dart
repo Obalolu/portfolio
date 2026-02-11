@@ -14,6 +14,8 @@ import 'package:portfolio/widgets/shared/segmented_neon_avatar.dart';
 import 'package:portfolio/widgets/shared/grid_background.dart';
 import 'package:portfolio/widgets/shared/responsive_container.dart';
 import 'package:portfolio/widgets/shared/shimmer_text.dart';
+import 'package:portfolio/widgets/shared/universal_interactive.dart';
+import 'package:portfolio/widgets/shared/viewport_animations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart' as launcher;
 
@@ -25,7 +27,6 @@ class HeroSection extends StatefulWidget {
 }
 
 class _HeroSectionState extends State<HeroSection> {
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -42,7 +43,9 @@ class _HeroSectionState extends State<HeroSection> {
                 children: [
                   SizedBox(height: isMobile ? 32 : 48),
                   // Profile and greeting
-                  isMobile ? _buildMobileLayout(screenWidth) : _buildDesktopLayout(),
+                  isMobile
+                      ? _buildMobileLayout(screenWidth)
+                      : _buildDesktopLayout(),
                   SizedBox(height: isMobile ? 40 : 64),
                   // Stats - responsive layout
                   _buildStatsSection(isMobile),
@@ -128,25 +131,41 @@ class _HeroSectionState extends State<HeroSection> {
                   ScaleInAnimation(
                     delay: const Duration(milliseconds: 700),
                     beginScale: 0.5,
-                    child: _buildSocialIcon(FontAwesomeIcons.github, AppContent.github, 'GitHub'),
+                    child: _buildSocialIcon(
+                      FontAwesomeIcons.github,
+                      AppContent.github,
+                      'GitHub',
+                    ),
                   ),
                   const SizedBox(width: 16),
                   ScaleInAnimation(
                     delay: const Duration(milliseconds: 750),
                     beginScale: 0.5,
-                    child: _buildSocialIcon(FontAwesomeIcons.linkedin, AppContent.linkedin, 'LinkedIn'),
+                    child: _buildSocialIcon(
+                      FontAwesomeIcons.linkedin,
+                      AppContent.linkedin,
+                      'LinkedIn',
+                    ),
                   ),
                   const SizedBox(width: 16),
                   ScaleInAnimation(
                     delay: const Duration(milliseconds: 800),
                     beginScale: 0.5,
-                    child: _buildSocialIcon(FontAwesomeIcons.xTwitter, AppContent.twitter, 'Twitter'),
+                    child: _buildSocialIcon(
+                      FontAwesomeIcons.xTwitter,
+                      AppContent.twitter,
+                      'Twitter',
+                    ),
                   ),
                   const SizedBox(width: 16),
                   ScaleInAnimation(
                     delay: const Duration(milliseconds: 850),
                     beginScale: 0.5,
-                    child: _buildSocialIcon(FontAwesomeIcons.envelope, 'mailto:${AppContent.email}', 'Email'),
+                    child: _buildSocialIcon(
+                      FontAwesomeIcons.envelope,
+                      'mailto:${AppContent.email}',
+                      'Email',
+                    ),
                   ),
                 ],
               ),
@@ -160,9 +179,7 @@ class _HeroSectionState extends State<HeroSection> {
           segmentCount: 12,
           stroke: 4,
           child: Container(
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-            ),
+            decoration: const BoxDecoration(shape: BoxShape.circle),
             child: ClipOval(
               child: Image.asset(
                 'assets/images/avatar.png',
@@ -251,22 +268,38 @@ class _HeroSectionState extends State<HeroSection> {
                 ScaleInAnimation(
                   delay: const Duration(milliseconds: 700),
                   beginScale: 0.5,
-                  child: _buildSocialIcon(FontAwesomeIcons.github, AppContent.github, 'GitHub'),
+                  child: _buildSocialIcon(
+                    FontAwesomeIcons.github,
+                    AppContent.github,
+                    'GitHub',
+                  ),
                 ),
                 ScaleInAnimation(
                   delay: const Duration(milliseconds: 750),
                   beginScale: 0.5,
-                  child: _buildSocialIcon(FontAwesomeIcons.linkedin, AppContent.linkedin, 'LinkedIn'),
+                  child: _buildSocialIcon(
+                    FontAwesomeIcons.linkedin,
+                    AppContent.linkedin,
+                    'LinkedIn',
+                  ),
                 ),
                 ScaleInAnimation(
                   delay: const Duration(milliseconds: 800),
                   beginScale: 0.5,
-                  child: _buildSocialIcon(FontAwesomeIcons.xTwitter, AppContent.twitter, 'Twitter'),
+                  child: _buildSocialIcon(
+                    FontAwesomeIcons.xTwitter,
+                    AppContent.twitter,
+                    'Twitter',
+                  ),
                 ),
                 ScaleInAnimation(
                   delay: const Duration(milliseconds: 850),
                   beginScale: 0.5,
-                  child: _buildSocialIcon(FontAwesomeIcons.envelope, 'mailto:${AppContent.email}', 'Email'),
+                  child: _buildSocialIcon(
+                    FontAwesomeIcons.envelope,
+                    'mailto:${AppContent.email}',
+                    'Email',
+                  ),
                 ),
               ],
             ),
@@ -280,9 +313,7 @@ class _HeroSectionState extends State<HeroSection> {
             segmentCount: 12,
             stroke: 3,
             child: Container(
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-              ),
+              decoration: const BoxDecoration(shape: BoxShape.circle),
               child: ClipOval(
                 child: Image.asset(
                   'assets/images/avatar.png',
@@ -308,8 +339,16 @@ class _HeroSectionState extends State<HeroSection> {
               runSpacing: 24,
               children: [
                 _buildMinimalStat(AppContent.age, 'Age', isMobile),
-                _buildMinimalStat(AppContent.yearsExperience, 'Years of\nexperience', isMobile),
-                _buildMinimalStat(AppContent.projectsWorked, 'Projects\nworked on', isMobile),
+                _buildMinimalStat(
+                  AppContent.yearsExperience,
+                  'Years of\nexperience',
+                  isMobile,
+                ),
+                _buildMinimalStat(
+                  AppContent.projectsWorked,
+                  'Projects\nworked on',
+                  isMobile,
+                ),
                 _buildMinimalStat(AppContent.coffees, 'Coffees', isMobile),
               ],
             )
@@ -317,8 +356,16 @@ class _HeroSectionState extends State<HeroSection> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildMinimalStat(AppContent.age, 'Age', isMobile),
-                _buildMinimalStat(AppContent.yearsExperience, 'Years of\nexperience', isMobile),
-                _buildMinimalStat(AppContent.projectsWorked, 'Projects\nworked on', isMobile),
+                _buildMinimalStat(
+                  AppContent.yearsExperience,
+                  'Years of\nexperience',
+                  isMobile,
+                ),
+                _buildMinimalStat(
+                  AppContent.projectsWorked,
+                  'Projects\nworked on',
+                  isMobile,
+                ),
                 _buildMinimalStat(AppContent.coffees, 'Coffees', isMobile),
               ],
             ),
@@ -340,7 +387,10 @@ class _HeroSectionState extends State<HeroSection> {
   Future<void> _launchUrl(String url) async {
     final uri = Uri.parse(url);
     if (await launcher.canLaunchUrl(uri)) {
-      await launcher.launchUrl(uri, mode: launcher.LaunchMode.externalApplication);
+      await launcher.launchUrl(
+        uri,
+        mode: launcher.LaunchMode.externalApplication,
+      );
     } else {
       debugPrint('Could not launch: $url');
     }
@@ -366,7 +416,9 @@ class _HeroSectionState extends State<HeroSection> {
   }
 
   Widget _buildStatValue(String value, bool isMobile) {
-    final fontSize = isMobile ? AppTypography.statMobile : AppTypography.statDesktop;
+    final fontSize = isMobile
+        ? AppTypography.statMobile
+        : AppTypography.statDesktop;
     // Extract numeric portion and suffix for count-up animation
     final match = RegExp(r'^(\d+)(.*)$').firstMatch(value);
     if (match != null) {
@@ -376,6 +428,7 @@ class _HeroSectionState extends State<HeroSection> {
         end: numericValue,
         suffix: suffix,
         delay: const Duration(milliseconds: 1100),
+        duration: const Duration(milliseconds: 2500),
         style: GoogleFonts.jetBrainsMono(
           fontSize: fontSize,
           fontWeight: FontWeight.w700,
@@ -405,17 +458,19 @@ class _AnimatedSecondaryButton extends StatefulWidget {
   const _AnimatedSecondaryButton({required this.text, required this.url});
 
   @override
-  State<_AnimatedSecondaryButton> createState() => _AnimatedSecondaryButtonState();
+  State<_AnimatedSecondaryButton> createState() =>
+      _AnimatedSecondaryButtonState();
 }
 
 class _AnimatedSecondaryButtonState extends State<_AnimatedSecondaryButton> {
-  bool _isHovered = false;
-
   Future<void> _launchCV() async {
     if (widget.url.startsWith('http')) {
       final uri = Uri.parse(widget.url);
       if (await launcher.canLaunchUrl(uri)) {
-        await launcher.launchUrl(uri, mode: launcher.LaunchMode.externalApplication);
+        await launcher.launchUrl(
+          uri,
+          mode: launcher.LaunchMode.externalApplication,
+        );
       }
     } else {
       // For local assets, load from root bundle
@@ -434,7 +489,10 @@ class _AnimatedSecondaryButtonState extends State<_AnimatedSecondaryButton> {
         final directory = Directory.systemTemp;
         final file = File('${directory.path}/cv.pdf');
         await file.writeAsBytes(data.buffer.asUint8List(), flush: true);
-        await launcher.launchUrl(Uri.file(file.path), mode: launcher.LaunchMode.externalApplication);
+        await launcher.launchUrl(
+          Uri.file(file.path),
+          mode: launcher.LaunchMode.externalApplication,
+        );
       }
     } catch (e) {
       debugPrint('Error launching CV: $e');
@@ -443,17 +501,15 @@ class _AnimatedSecondaryButtonState extends State<_AnimatedSecondaryButton> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTap: _launchCV,
-        child: AnimatedContainer(
+    return UniversalInteractive(
+      onTap: _launchCV,
+      builder: (context, state) {
+        final isActive = state.isHovered || state.isPressed;
+        return AnimatedContainer(
           duration: AppAnimations.fast,
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           decoration: BoxDecoration(
-            color: _isHovered ? AppColors.primary : Colors.transparent,
+            color: isActive ? AppColors.primary : Colors.transparent,
             border: Border.all(color: AppColors.primary),
             borderRadius: BorderRadius.circular(50),
           ),
@@ -462,12 +518,12 @@ class _AnimatedSecondaryButtonState extends State<_AnimatedSecondaryButton> {
             style: GoogleFonts.jetBrainsMono(
               fontSize: 15,
               fontWeight: FontWeight.w600,
-              color: _isHovered ? AppColors.background : AppColors.primary,
+              color: isActive ? AppColors.background : AppColors.primary,
               letterSpacing: 0.5,
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

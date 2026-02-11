@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/models/skill.dart';
 import 'package:portfolio/utils/app_animations.dart';
 import 'package:portfolio/utils/app_colors.dart';
+import 'package:portfolio/utils/app_spacing.dart';
+import 'package:portfolio/widgets/shared/universal_interactive.dart';
 
 /// Horizontal scrollable tab bar for filtering skills by category
 class CategoryTabBar extends StatefulWidget {
@@ -22,26 +24,73 @@ class CategoryTabBar extends StatefulWidget {
 class _CategoryTabBarState extends State<CategoryTabBar> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 48,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: SkillCategory.values.length,
-        itemBuilder: (context, index) {
-          final category = SkillCategory.values[index];
-          final isSelected = category == widget.selectedCategory;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = AppSpacing.isMobile(constraints.maxWidth);
 
-          return Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: _CategoryTab(
-              category: category,
-              isSelected: isSelected,
-              onTap: () => widget.onCategorySelected(category),
-            ),
-          );
-        },
-      ),
+        return Container(
+          height: 48,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Stack(
+            children: [
+              ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: SkillCategory.values.length,
+                itemBuilder: (context, index) {
+                  final category = SkillCategory.values[index];
+                  final isSelected = category == widget.selectedCategory;
+
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: _CategoryTab(
+                      category: category,
+                      isSelected: isSelected,
+                      onTap: () => widget.onCategorySelected(category),
+                    ),
+                  );
+                },
+              ),
+              // Scroll indicators for mobile (gradient fades at edges)
+              if (isMobile)
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 20,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [
+                                AppColors.background,
+                                AppColors.background.withValues(alpha: 0),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          width: 20,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [
+                                AppColors.background.withValues(alpha: 0),
+                                AppColors.background,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -62,29 +111,29 @@ class _CategoryTab extends StatefulWidget {
 }
 
 class _CategoryTabState extends State<_CategoryTab> {
-  bool _isHovered = false;
-
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
+    return UniversalInteractive(
+      onTap: widget.onTap,
+      builder: (context, state) {
+        final isActive =
+            state.isHovered || state.isPressed || widget.isSelected;
+        return AnimatedContainer(
           duration: AppAnimations.fast,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           decoration: BoxDecoration(
             color: widget.isSelected
                 ? AppColors.primary
-                : (_isHovered
-                    ? AppColors.surfaceLight
-                    : Colors.transparent),
+                : (state.isHovered
+                      ? AppColors.surfaceLight
+                      : Colors.transparent),
             borderRadius: BorderRadius.circular(50),
             border: Border.all(
               color: widget.isSelected
                   ? AppColors.primary
-                  : AppColors.primary.withValues(alpha: _isHovered ? 0.3 : 0.15),
+                  : AppColors.primary.withValues(
+                      alpha: state.isHovered ? 0.3 : 0.15,
+                    ),
             ),
           ),
           child: Row(
@@ -102,8 +151,8 @@ class _CategoryTabState extends State<_CategoryTab> {
               ),
             ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
