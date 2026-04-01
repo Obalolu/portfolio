@@ -1,0 +1,6 @@
+{
+  "framework": "flutter",
+  "ignoreCommand": "git diff --name-only HEAD^ HEAD | grep -qvE '\\.md$|\\.txt$|\\.json$|\\.yaml$|\\.yml$' && echo 'build' || echo 'skip'",
+  "buildCommand": "if cd flutter; then git pull && cd .. ; else git clone https://github.com/flutter/flutter.git --depth 1 -b stable; fi && flutter/bin/flutter doctor && flutter/bin/flutter clean && flutter/bin/flutter config --enable-web && flutter/bin/flutter build web --release",
+  "outputDirectory": "build/web"
+}
